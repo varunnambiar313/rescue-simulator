@@ -12,32 +12,34 @@ canvas {
   max-width: 100%;
 }
 
+/* Dialogue */
 #dialogue {
-  background: #fff;
+  background: white;
   border: 2px solid #ff69b4;
   padding: 10px;
   margin: 10px auto;
   width: 90%;
   max-width: 500px;
-  min-height: 40px;
   color: #d63384;
 }
 
-#controls {
-  margin-top: 15px;
-  display: none;
+/* Joystick */
+#joystick {
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 105, 180, 0.2);
+  border-radius: 50%;
+  margin: 20px auto;
+  position: relative;
+  touch-action: none;
 }
 
-#controls button {
-  font-size: 24px;
-  padding: 15px;
-  margin: 5px;
-  border-radius: 12px;
-  border: none;
+#stick {
+  width: 50px;
+  height: 50px;
   background: #ff69b4;
-  color: white;
-}
-
-#controls button:active {
-  background: #d63384;
+  border-radius: 50%;
+  position: absolute;
+  top: 35px;
+  left: 35px;
 }
