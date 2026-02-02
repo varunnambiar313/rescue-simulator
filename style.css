@@ -10,14 +10,19 @@ canvas {
   border: 4px solid #ff69b4;
   background-color: #fff0f5;
   max-width: 100%;
-  height: auto;
 }
 
-h1 {
+#dialogue {
+  background: #fff;
+  border: 2px solid #ff69b4;
+  padding: 10px;
+  margin: 10px auto;
+  width: 90%;
+  max-width: 500px;
+  min-height: 40px;
   color: #d63384;
 }
 
-/* Mobile controls */
 #controls {
   margin-top: 15px;
   display: none;
