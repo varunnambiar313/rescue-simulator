@@ -20,7 +20,7 @@ anuImg.src = "anu.png";
 varunImg.src = "varun.png";
 
 /* ---------- Game Settings ---------- */
-const speed = 2.5;
+const speed = 1.8;
 let level = 0;
 let gameWon = false;
 
@@ -63,47 +63,69 @@ function loadLevel() {
 
 loadLevel();
 
-/* ---------- Virtual Joystick ---------- */
+/* ---------- Virtual Joystick (Touch + Mouse) ---------- */
 const joystick = document.getElementById("joystick");
 const stick = document.getElementById("stick");
 
 let joyX = 0;
 let joyY = 0;
+let dragging = false;
 
-joystick.addEventListener("touchstart", e => {
-  e.preventDefault();
-}, { passive: false });
+const MAX_DIST = 40;
 
-joystick.addEventListener("touchmove", e => {
-  e.preventDefault();
-
+function updateStick(clientX, clientY) {
   const rect = joystick.getBoundingClientRect();
-  const touch = e.touches[0];
+  let x = clientX - rect.left - rect.width / 2;
+  let y = clientY - rect.top - rect.height / 2;
 
-  let x = touch.clientX - rect.left - rect.width / 2;
-  let y = touch.clientY - rect.top - rect.height / 2;
-
-  const max = 40;
   const dist = Math.hypot(x, y);
-
-  if (dist > max) {
-    x *= max / dist;
-    y *= max / dist;
+  if (dist > MAX_DIST) {
+    x *= MAX_DIST / dist;
+    y *= MAX_DIST / dist;
   }
 
   stick.style.left = `${x + rect.width / 2 - 25}px`;
   stick.style.top = `${y + rect.height / 2 - 25}px`;
 
-  joyX = x / max;
-  joyY = y / max;
-}, { passive: false });
+  joyX = x / MAX_DIST;
+  joyY = y / MAX_DIST;
+}
 
-joystick.addEventListener("touchend", () => {
+function resetStick() {
+  dragging = false;
   joyX = 0;
   joyY = 0;
   stick.style.left = "35px";
   stick.style.top = "35px";
+}
+
+/* ---- Touch ---- */
+joystick.addEventListener("touchstart", e => {
+  e.preventDefault();
+  dragging = true;
+}, { passive: false });
+
+joystick.addEventListener("touchmove", e => {
+  if (!dragging) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  updateStick(t.clientX, t.clientY);
+}, { passive: false });
+
+joystick.addEventListener("touchend", resetStick);
+
+/* ---- Mouse ---- */
+joystick.addEventListener("mousedown", e => {
+  dragging = true;
+  updateStick(e.clientX, e.clientY);
 });
+
+window.addEventListener("mousemove", e => {
+  if (!dragging) return;
+  updateStick(e.clientX, e.clientY);
+});
+
+window.addEventListener("mouseup", resetStick);
 
 /* ---------- Enemy Shooting ---------- */
 function enemyShoot() {
