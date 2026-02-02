@@ -2,19 +2,29 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const dialogueBox = document.getElementById("dialogue");
 
-/* Load images */
+/* ---------- Assets ---------- */
 const anuImg = new Image();
-anuImg.src = "anu.png";
-
 const varunImg = new Image();
+
+let anuLoaded = false;
+let varunLoaded = false;
+
+anuImg.onload = () => anuLoaded = true;
+varunImg.onload = () => varunLoaded = true;
+
+// If files don't exist, onerror fires and we fallback to emoji
+anuImg.onerror = () => anuLoaded = false;
+varunImg.onerror = () => varunLoaded = false;
+
+anuImg.src = "anu.png";
 varunImg.src = "varun.png";
 
-/* Game settings */
-const speed = 2.2;
+/* ---------- Game Settings ---------- */
+const speed = 2.5;
 let level = 0;
 let gameWon = false;
 
-/* Levels */
+/* ---------- Levels ---------- */
 const levels = [
   {
     dialogue: "Anu: Varun, I'm coming for you 💖",
@@ -40,7 +50,7 @@ const levels = [
 
 let princess, prince, obstacles, enemies, bullets;
 
-/* Init */
+/* ---------- Init ---------- */
 function loadLevel() {
   const l = levels[level];
   princess = { ...l.princessStart, size: 32 };
@@ -53,44 +63,49 @@ function loadLevel() {
 
 loadLevel();
 
-/* -------- Virtual Joystick -------- */
+/* ---------- Virtual Joystick ---------- */
 const joystick = document.getElementById("joystick");
 const stick = document.getElementById("stick");
 
-let joyActive = false;
 let joyX = 0;
 let joyY = 0;
 
-joystick.addEventListener("touchstart", () => joyActive = true);
-joystick.addEventListener("touchend", resetStick);
+joystick.addEventListener("touchstart", e => {
+  e.preventDefault();
+}, { passive: false });
+
 joystick.addEventListener("touchmove", e => {
-  if (!joyActive) return;
+  e.preventDefault();
+
   const rect = joystick.getBoundingClientRect();
   const touch = e.touches[0];
-  let x = touch.clientX - rect.left - 60;
-  let y = touch.clientY - rect.top - 60;
 
+  let x = touch.clientX - rect.left - rect.width / 2;
+  let y = touch.clientY - rect.top - rect.height / 2;
+
+  const max = 40;
   const dist = Math.hypot(x, y);
-  if (dist > 40) {
-    x *= 40 / dist;
-    y *= 40 / dist;
+
+  if (dist > max) {
+    x *= max / dist;
+    y *= max / dist;
   }
 
-  stick.style.left = `${x + 35}px`;
-  stick.style.top = `${y + 35}px`;
+  stick.style.left = `${x + rect.width / 2 - 25}px`;
+  stick.style.top = `${y + rect.height / 2 - 25}px`;
 
-  joyX = x / 40;
-  joyY = y / 40;
-});
+  joyX = x / max;
+  joyY = y / max;
+}, { passive: false });
 
-function resetStick() {
-  joyActive = false;
-  joyX = joyY = 0;
+joystick.addEventListener("touchend", () => {
+  joyX = 0;
+  joyY = 0;
   stick.style.left = "35px";
   stick.style.top = "35px";
-}
+});
 
-/* -------- Enemy Shooting -------- */
+/* ---------- Enemy Shooting ---------- */
 function enemyShoot() {
   enemies.forEach(e => {
     e.cooldown--;
@@ -98,16 +113,16 @@ function enemyShoot() {
       bullets.push({
         x: e.x,
         y: e.y,
-        vx: (princess.x - e.x) * 0.01,
-        vy: (princess.y - e.y) * 0.01
+        vx: (princess.x - e.x) * 0.008,
+        vy: (princess.y - e.y) * 0.008
       });
       e.cooldown = 90;
     }
   });
 }
 
-/* Collision */
-function hit(a, b, size = 10) {
+/* ---------- Collision ---------- */
+function hit(a, b, size) {
   return (
     a.x < b.x + size &&
     a.x + size > b.x &&
@@ -121,15 +136,13 @@ function resetLevel() {
   setTimeout(loadLevel, 1000);
 }
 
-/* Update */
+/* ---------- Update ---------- */
 function update() {
-  if (!gameWon) {
-    princess.x += joyX * speed * 3;
-    princess.y += joyY * speed * 3;
+  princess.x += joyX * speed * 3;
+  princess.y += joyY * speed * 3;
 
-    princess.x = Math.max(0, Math.min(canvas.width - princess.size, princess.x));
-    princess.y = Math.max(0, Math.min(canvas.height - princess.size, princess.y));
-  }
+  princess.x = Math.max(0, Math.min(canvas.width - princess.size, princess.x));
+  princess.y = Math.max(0, Math.min(canvas.height - princess.size, princess.y));
 
   enemyShoot();
 
@@ -153,28 +166,46 @@ function update() {
   }
 }
 
-/* Draw */
+/* ---------- Draw ---------- */
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.drawImage(anuImg, princess.x, princess.y, princess.size, princess.size);
-  ctx.drawImage(varunImg, prince.x, prince.y, prince.size, prince.size);
+  // Princess
+  if (anuLoaded) {
+    ctx.drawImage(anuImg, princess.x, princess.y, princess.size, princess.size);
+  } else {
+    ctx.font = "28px serif";
+    ctx.fillText("👩", princess.x, princess.y + 28);
+  }
 
+  // Prince
+  if (varunLoaded) {
+    ctx.drawImage(varunImg, prince.x, prince.y, prince.size, prince.size);
+  } else {
+    ctx.font = "28px serif";
+    ctx.fillText("👨", prince.x, prince.y + 28);
+  }
+
+  // Obstacles
   ctx.fillStyle = "#555";
   obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
 
-  ctx.font = "24px serif";
-  enemies.forEach(e => ctx.fillText("😈", e.x, e.y));
+  // Enemies
+  ctx.font = "26px serif";
+  enemies.forEach(e => ctx.fillText("😈", e.x, e.y + 24));
 
+  // Bullets
   ctx.fillStyle = "#000";
   bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 4));
 }
 
-/* Loop */
+/* ---------- Loop ---------- */
 function loop() {
-  update();
-  draw();
-  requestAnimationFrame(loop);
+  if (!gameWon) {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  }
 }
 
 loop();
