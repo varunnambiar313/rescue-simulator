@@ -1,6 +1,6 @@
 body {
   text-align: center;
-  background: linear-gradient(#dbeafe, #ffffff);
+  background: linear-gradient(#dbeafe, #eff6ff);
   font-family: "Comic Sans MS", cursive;
   margin: 0;
   padding: 10px;
@@ -23,11 +23,39 @@ canvas {
   color: #1e3a8a;
 }
 
+/* Overlay */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 58, 138, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.bubble {
+  background: white;
+  border: 3px solid #2563eb;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 300px;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
 /* Joystick */
 #joystick {
   width: 120px;
   height: 120px;
-  background: rgba(37, 99, 235, 0.25);
+  background: rgba(37, 99, 235, 0.2);
   border-radius: 50%;
   margin: 20px auto;
   position: relative;
@@ -42,31 +70,4 @@ canvas {
   position: absolute;
   top: 35px;
   left: 35px;
-}
-
-/* Overlay */
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-#overlayContent {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 300px;
-  color: #1e3a8a;
-}
-
-#overlay button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
 }
