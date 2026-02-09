@@ -7,8 +7,7 @@ const nextBtn = document.getElementById("nextBtn");
 /* ---------- Assets ---------- */
 const anuImg = new Image();
 const varunImg = new Image();
-let anuLoaded = false;
-let varunLoaded = false;
+let anuLoaded = false, varunLoaded = false;
 
 anuImg.onload = () => anuLoaded = true;
 varunImg.onload = () => varunLoaded = true;
@@ -30,6 +29,7 @@ const levels = [
     dialogue: "Anu: I'm coming for you Varun 💙",
     princessStart: { x: 50, y: 180 },
     prince: { x: 520, y: 180 },
+    obstacles: [{ x: 250, y: 60, w: 20, h: 280 }],
     enemies: [{ x: 350, y: 200 }],
     boss: false
   },
@@ -37,6 +37,10 @@ const levels = [
     dialogue: "Varun: Almost there Anu 💙",
     princessStart: { x: 50, y: 50 },
     prince: { x: 520, y: 320 },
+    obstacles: [
+      { x: 200, y: 0, w: 20, h: 200 },
+      { x: 350, y: 200, w: 20, h: 200 }
+    ],
     enemies: [
       { x: 300, y: 100 },
       { x: 450, y: 300 }
@@ -44,23 +48,28 @@ const levels = [
     boss: false
   },
   {
-    dialogue: "Final Boss 💙",
-    princessStart: { x: 280, y: 300 },
-    prince: { x: 280, y: 40 },
-    enemies: [{ x: 280, y: 160, boss: true, health: 20 }],
+    dialogue: "Final Boss 💙 Defeat him!",
+    princessStart: { x: 280, y: 320 },
+    prince: null,
+    obstacles: [],
+    enemies: [{ x: 280, y: 120, boss: true, health: 30 }],
     boss: true
   }
 ];
 
-let princess, prince, enemies, bullets;
+let princess, prince, enemies, obstacles;
+let enemyBullets = [];
+let playerBullets = [];
 
 /* ---------- Init ---------- */
 function loadLevel() {
   const l = levels[level];
   princess = { ...l.princessStart, size: 32 };
-  prince = { ...l.prince, size: 32 };
+  prince = l.prince;
   enemies = l.enemies.map(e => ({ ...e, cooldown: 0 }));
-  bullets = [];
+  obstacles = l.obstacles;
+  enemyBullets = [];
+  playerBullets = [];
   princessHealth = l.boss ? 2 : 1;
   paused = false;
   dialogueBox.innerText = l.dialogue;
@@ -96,19 +105,24 @@ function resetStick() {
   stick.style.top = "35px";
 }
 
-joystick.addEventListener("touchstart", e => dragging = true);
+joystick.addEventListener("touchstart", () => dragging = true);
 joystick.addEventListener("touchmove", e => updateStick(e.touches[0].clientX, e.touches[0].clientY));
 joystick.addEventListener("touchend", resetStick);
 joystick.addEventListener("mousedown", e => { dragging = true; updateStick(e.clientX, e.clientY); });
 window.addEventListener("mousemove", e => dragging && updateStick(e.clientX, e.clientY));
 window.addEventListener("mouseup", resetStick);
 
+/* ---------- Utilities ---------- */
+function hit(a, b, s) {
+  return a.x < b.x + s && a.x + s > b.x && a.y < b.y + s && a.y + s > b.y;
+}
+
 /* ---------- Game Logic ---------- */
 function enemyShoot() {
   enemies.forEach(e => {
     e.cooldown--;
     if (e.cooldown <= 0) {
-      bullets.push({
+      enemyBullets.push({
         x: e.x,
         y: e.y,
         vx: (princess.x - e.x) * 0.006,
@@ -119,9 +133,19 @@ function enemyShoot() {
   });
 }
 
-function hit(a, b, s) {
-  return a.x < b.x + s && a.x + s > b.x && a.y < b.y + s && a.y + s > b.y;
+function playerShoot() {
+  if (!levels[level].boss) return;
+  const boss = enemies[0];
+  playerBullets.push({
+    x: princess.x,
+    y: princess.y,
+    vx: (boss.x - princess.x) * 0.01,
+    vy: (boss.y - princess.y) * 0.01
+  });
 }
+
+/* ---------- Update ---------- */
+let shootTimer = 0;
 
 function update() {
   const speed = levels[level].boss ? BASE_SPEED * 1.2 : BASE_SPEED * 2;
@@ -130,34 +154,74 @@ function update() {
 
   enemyShoot();
 
-  bullets.forEach(b => {
+  shootTimer++;
+  if (shootTimer > 25) {
+    playerShoot();
+    shootTimer = 0;
+  }
+
+  enemyBullets.forEach(b => {
     b.x += b.vx;
     b.y += b.vy;
-    if (hit(b, princess, princess.size)) {
+    if (hit(b, princess, 32)) {
       princessHealth--;
-      bullets.length = 0;
+      enemyBullets = [];
       if (princessHealth <= 0) loadLevel();
     }
   });
 
-  enemies.forEach(e => {
-    if (e.boss && hit(princess, e, 32)) {
-      e.health--;
-      if (e.health <= 0) showOverlay();
+  playerBullets.forEach(b => {
+    b.x += b.vx;
+    b.y += b.vy;
+    const boss = enemies[0];
+    if (boss && hit(b, boss, 32)) {
+      boss.health--;
+      playerBullets = [];
+      if (boss.health <= 0) showOverlay();
     }
   });
 
-  if (!levels[level].boss && hit(princess, prince, 32)) showOverlay();
+  obstacles.forEach(o => {
+    if (hit(princess, o, o.w)) loadLevel();
+  });
+
+  if (!levels[level].boss && prince && hit(princess, prince, 32)) showOverlay();
 }
 
+/* ---------- Draw ---------- */
 function draw() {
-  ctx.clearRect(0,0,600,400);
-  ctx.font = "28px serif";
-  ctx.fillText(anuLoaded ? "" : "👩", princess.x, princess.y + 28);
+  ctx.clearRect(0, 0, 600, 400);
+
+  // Obstacles
+  ctx.fillStyle = "#1e40af";
+  obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+
+  // Princess
   if (anuLoaded) ctx.drawImage(anuImg, princess.x, princess.y, 32, 32);
-  ctx.fillText(varunLoaded ? "" : "👨", prince.x, prince.y + 28);
-  if (varunLoaded) ctx.drawImage(varunImg, prince.x, prince.y, 32, 32);
+  else ctx.fillText("👩", princess.x, princess.y + 28);
+
+  // Prince
+  if (prince) {
+    if (varunLoaded) ctx.drawImage(varunImg, prince.x, prince.y, 32, 32);
+    else ctx.fillText("👨", prince.x, prince.y + 28);
+  }
+
+  // Enemies
   enemies.forEach(e => ctx.fillText("😈", e.x, e.y + 26));
+
+  // Bullets
+  ctx.fillStyle = "#2563eb";
+  enemyBullets.forEach(b => ctx.beginPath(), ctx.arc(b.x, b.y, 4, 0, Math.PI * 2), ctx.fill());
+  ctx.fillStyle = "#1d4ed8";
+  playerBullets.forEach(b => ctx.beginPath(), ctx.arc(b.x, b.y, 4, 0, Math.PI * 2), ctx.fill());
+
+  // Health bars
+  if (levels[level].boss) {
+    ctx.fillStyle = "red";
+    ctx.fillRect(20, 10, princessHealth * 40, 8);
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(200, 10, enemies[0].health * 6, 8);
+  }
 }
 
 function showOverlay() {
