@@ -52,7 +52,7 @@ const levels = [
     princessStart: { x: 280, y: 320 },
     prince: null,
     obstacles: [],
-    enemies: [{ x: 280, y: 120, boss: true, health: 30 }],
+    enemies: [{ x: 280, y: 120, boss: true, health: 30, cooldown: 0 }],
     boss: true
   }
 ];
@@ -66,7 +66,7 @@ function loadLevel() {
   const l = levels[level];
   princess = { ...l.princessStart, size: 32 };
   prince = l.prince;
-  enemies = l.enemies.map(e => ({ ...e, cooldown: 0 }));
+  enemies = l.enemies.map(e => ({ ...e }));
   obstacles = l.obstacles;
   enemyBullets = [];
   playerBullets = [];
@@ -74,8 +74,6 @@ function loadLevel() {
   paused = false;
   dialogueBox.innerText = l.dialogue;
 }
-
-loadLevel();
 
 /* ---------- Joystick ---------- */
 const joystick = document.getElementById("joystick");
@@ -87,10 +85,10 @@ function updateStick(x, y) {
   const r = joystick.getBoundingClientRect();
   let dx = x - r.left - r.width / 2;
   let dy = y - r.top - r.height / 2;
-  const d = Math.hypot(dx, dy);
-  if (d > MAX_DIST) {
-    dx *= MAX_DIST / d;
-    dy *= MAX_DIST / d;
+  const dist = Math.hypot(dx, dy);
+  if (dist > MAX_DIST) {
+    dx *= MAX_DIST / dist;
+    dy *= MAX_DIST / dist;
   }
   stick.style.left = `${dx + r.width / 2 - 25}px`;
   stick.style.top = `${dy + r.height / 2 - 25}px`;
@@ -100,24 +98,25 @@ function updateStick(x, y) {
 
 function resetStick() {
   dragging = false;
-  joyX = joyY = 0;
+  joyX = 0; joyY = 0;
   stick.style.left = "35px";
   stick.style.top = "35px";
 }
 
-joystick.addEventListener("touchstart", () => dragging = true);
-joystick.addEventListener("touchmove", e => updateStick(e.touches[0].clientX, e.touches[0].clientY));
-joystick.addEventListener("touchend", resetStick);
+joystick.addEventListener("touchstart", e => { e.preventDefault(); dragging = true; });
+joystick.addEventListener("touchmove", e => { e.preventDefault(); dragging && updateStick(e.touches[0].clientX, e.touches[0].clientY); });
+joystick.addEventListener("touchend", e => { e.preventDefault(); resetStick(); });
+
 joystick.addEventListener("mousedown", e => { dragging = true; updateStick(e.clientX, e.clientY); });
 window.addEventListener("mousemove", e => dragging && updateStick(e.clientX, e.clientY));
 window.addEventListener("mouseup", resetStick);
 
-/* ---------- Utilities ---------- */
+/* ---------- Utility ---------- */
 function hit(a, b, s) {
   return a.x < b.x + s && a.x + s > b.x && a.y < b.y + s && a.y + s > b.y;
 }
 
-/* ---------- Game Logic ---------- */
+/* ---------- Shooting ---------- */
 function enemyShoot() {
   enemies.forEach(e => {
     e.cooldown--;
@@ -128,14 +127,16 @@ function enemyShoot() {
         vx: (princess.x - e.x) * 0.006,
         vy: (princess.y - e.y) * 0.006
       });
-      e.cooldown = e.boss ? 40 : 90;
+      e.cooldown = e.boss ? 50 : 90;
     }
   });
 }
 
+let shootTimer = 0;
 function playerShoot() {
   if (!levels[level].boss) return;
   const boss = enemies[0];
+  if (!boss) return;
   playerBullets.push({
     x: princess.x,
     y: princess.y,
@@ -145,52 +146,50 @@ function playerShoot() {
 }
 
 /* ---------- Update ---------- */
-let shootTimer = 0;
-
 function update() {
-  const speed = levels[level].boss ? BASE_SPEED * 1.2 : BASE_SPEED * 2;
-  princess.x += joyX * speed;
-  princess.y += joyY * speed;
+  const moveSpeed = levels[level].boss ? BASE_SPEED*1.2 : BASE_SPEED*2;
+  princess.x += joyX * moveSpeed;
+  princess.y += joyY * moveSpeed;
+
+  // Keep inside canvas
+  princess.x = Math.max(0, Math.min(canvas.width - 32, princess.x));
+  princess.y = Math.max(0, Math.min(canvas.height - 32, princess.y));
 
   enemyShoot();
-
   shootTimer++;
-  if (shootTimer > 25) {
-    playerShoot();
-    shootTimer = 0;
-  }
+  if (shootTimer > 25) { playerShoot(); shootTimer = 0; }
 
-  enemyBullets.forEach(b => {
-    b.x += b.vx;
-    b.y += b.vy;
+  // Enemy bullets
+  enemyBullets.forEach((b, i) => {
+    b.x += b.vx; b.y += b.vy;
     if (hit(b, princess, 32)) {
       princessHealth--;
-      enemyBullets = [];
+      enemyBullets.splice(i,1);
       if (princessHealth <= 0) loadLevel();
     }
   });
 
-  playerBullets.forEach(b => {
-    b.x += b.vx;
-    b.y += b.vy;
+  // Player bullets
+  playerBullets.forEach((b, i) => {
+    b.x += b.vx; b.y += b.vy;
     const boss = enemies[0];
     if (boss && hit(b, boss, 32)) {
       boss.health--;
-      playerBullets = [];
+      playerBullets.splice(i,1);
       if (boss.health <= 0) showOverlay();
     }
   });
 
-  obstacles.forEach(o => {
-    if (hit(princess, o, o.w)) loadLevel();
-  });
+  // Barriers
+  obstacles.forEach(o => { if (hit(princess,o,o.w)) loadLevel(); });
 
-  if (!levels[level].boss && prince && hit(princess, prince, 32)) showOverlay();
+  // Level goal
+  if (!levels[level].boss && prince && hit(princess,prince,32)) showOverlay();
 }
 
 /* ---------- Draw ---------- */
 function draw() {
-  ctx.clearRect(0, 0, 600, 400);
+  ctx.clearRect(0,0,600,400);
 
   // Obstacles
   ctx.fillStyle = "#1e40af";
@@ -198,48 +197,49 @@ function draw() {
 
   // Princess
   if (anuLoaded) ctx.drawImage(anuImg, princess.x, princess.y, 32, 32);
-  else ctx.fillText("👩", princess.x, princess.y + 28);
+  else { ctx.font="28px serif"; ctx.fillText("👩", princess.x, princess.y+28); }
 
   // Prince
   if (prince) {
     if (varunLoaded) ctx.drawImage(varunImg, prince.x, prince.y, 32, 32);
-    else ctx.fillText("👨", prince.x, prince.y + 28);
+    else ctx.fillText("👨", prince.x, prince.y+28);
   }
 
   // Enemies
-  enemies.forEach(e => ctx.fillText("😈", e.x, e.y + 26));
+  enemies.forEach(e => ctx.fillText("😈", e.x, e.y+26));
 
   // Bullets
-  ctx.fillStyle = "#2563eb";
-  enemyBullets.forEach(b => ctx.beginPath(), ctx.arc(b.x, b.y, 4, 0, Math.PI * 2), ctx.fill());
-  ctx.fillStyle = "#1d4ed8";
-  playerBullets.forEach(b => ctx.beginPath(), ctx.arc(b.x, b.y, 4, 0, Math.PI * 2), ctx.fill());
+  ctx.fillStyle="#2563eb";
+  enemyBullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x,b.y,4,0,Math.PI*2); ctx.fill(); });
+  ctx.fillStyle="#1d4ed8";
+  playerBullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x,b.y,4,0,Math.PI*2); ctx.fill(); });
 
   // Health bars
   if (levels[level].boss) {
-    ctx.fillStyle = "red";
-    ctx.fillRect(20, 10, princessHealth * 40, 8);
-    ctx.fillStyle = "#2563eb";
-    ctx.fillRect(200, 10, enemies[0].health * 6, 8);
+    ctx.fillStyle="red";
+    ctx.fillRect(20,10,princessHealth*40,8);
+    ctx.fillStyle="#2563eb";
+    ctx.fillRect(200,10,enemies[0].health*6,8);
   }
 }
 
+/* ---------- Overlay ---------- */
 function showOverlay() {
   paused = true;
-  overlay.style.display = "flex";
+  overlay.style.display="flex";
 }
 
 nextBtn.onclick = () => {
-  overlay.style.display = "none";
+  overlay.style.display="none";
   level++;
-  if (level >= levels.length) {
-    document.body.innerHTML = "<h1>💙 Varun Saved 💙<br/>I love you</h1>";
+  if(level>=levels.length){
+    document.body.innerHTML="<h1>💙 Varun Saved 💙<br/>I love you</h1>";
   } else loadLevel();
 };
 
 /* ---------- Loop ---------- */
-function loop() {
-  if (!paused) update();
+function loop(){
+  if(!paused) update();
   draw();
   requestAnimationFrame(loop);
 }
