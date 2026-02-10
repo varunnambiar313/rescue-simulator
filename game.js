@@ -66,7 +66,11 @@ function loadLevel() {
   const l = levels[level];
   princess = { ...l.princessStart, size: 32 };
   prince = l.prince;
-  enemies = l.enemies.map(e => ({ ...e }));
+  enemies = l.enemies.map(e => ({
+    cooldown: 20,
+    health: e.boss ? 30 : 1,
+    ...e
+  }));
   obstacles = l.obstacles;
   enemyBullets = [];
   playerBullets = [];
@@ -197,16 +201,34 @@ function draw() {
 
   // Princess
   if (anuLoaded) ctx.drawImage(anuImg, princess.x, princess.y, 32, 32);
-  else { ctx.font="28px serif"; ctx.fillText("👩", princess.x, princess.y+28); }
+  else {
+    ctx.fillStyle = "#ec4899";
+    ctx.fillRect(princess.x, princess.y, 32, 32);
+    ctx.font = "22px sans-serif";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("A", princess.x + 8, princess.y + 24);
+  }
 
   // Prince
   if (prince) {
     if (varunLoaded) ctx.drawImage(varunImg, prince.x, prince.y, 32, 32);
-    else ctx.fillText("👨", prince.x, prince.y+28);
+    else {
+      ctx.fillStyle = "#2563eb";
+      ctx.fillRect(prince.x, prince.y, 32, 32);
+      ctx.font = "22px sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText("V", prince.x + 8, prince.y + 24);
+    }
   }
 
   // Enemies
-  enemies.forEach(e => ctx.fillText("😈", e.x, e.y+26));
+  enemies.forEach(e => {
+    ctx.fillStyle = "#7c3aed";
+    ctx.fillRect(e.x, e.y, 32, 32);
+    ctx.font = "20px sans-serif";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("E", e.x + 8, e.y + 23);
+  });
 
   // Bullets
   ctx.fillStyle="#2563eb";
@@ -243,4 +265,5 @@ function loop(){
   draw();
   requestAnimationFrame(loop);
 }
+loadLevel();
 loop();
