@@ -174,7 +174,7 @@ function startNextLevelAfterDelay() {
 function renderQuiz(levelIndex) {
   const quiz = quizData[levelIndex];
   clearOverlayUI();
-  overlayTitle.innerText = "Relationship Test ( Take very seriously";
+  overlayTitle.innerText = "Relationship Test ( Take very seriously)";
   overlayContent.innerText = quiz.question;
   openOverlay();
 
