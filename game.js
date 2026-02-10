@@ -103,7 +103,7 @@ const levels = [
     boss: false
   },
   {
-    dialogue: "Final Boss 💙 Defeat him!",
+    dialogue: "Anu this is the DP World IT VP, take him out and end this 💙",
     princessStart: { x: 280, y: 320 },
     prince: null,
     obstacles: [],
@@ -413,6 +413,7 @@ function draw() {
     ctx.fillRect(20, 16, princessHealth * 40, 8);
 
     ctx.fillStyle = "#111827";
+    ctx.fillText("DP World VP of IT", 200, 10);
     ctx.fillText("Boss Health", 200, 10);
     ctx.fillStyle = "#2563eb";
     ctx.fillRect(200, 16, enemies[0].health * 6, 8);
