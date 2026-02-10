@@ -171,6 +171,7 @@ function renderQuiz(levelIndex) {
   const quiz = quizData[levelIndex];
   clearOverlayUI();
   overlayTitle.innerText = "Relationship Test ( Take very seriously";
+  overlayTitle.innerText = `Quiz after Level ${levelIndex + 1}`;
   overlayContent.innerText = quiz.question;
   openOverlay();
 
