@@ -393,6 +393,11 @@ function draw() {
       ctx.fillStyle = "#ffffff";
       ctx.fillText("E", e.x + 8, e.y + 23);
     }
+    ctx.fillStyle = "#7c3aed";
+    ctx.fillRect(e.x, e.y, 32, 32);
+    ctx.font = "20px sans-serif";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("E", e.x + 8, e.y + 23);
   });
 
   // Bullets
@@ -421,6 +426,20 @@ function draw() {
 
     ctx.fillStyle = "#111827";
     ctx.fillText("DP World VP of IT", 200, 10);
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(200, 16, enemies[0].health * 6, 8);
+  }
+}
+
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Anu Health", 20, 10);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(20, 16, princessHealth * 40, 8);
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("DP World VP of IT", 200, 10);
+    ctx.fillText("Boss Health", 200, 10);
     ctx.fillStyle = "#2563eb";
     ctx.fillRect(200, 16, enemies[0].health * 6, 8);
   }
