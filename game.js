@@ -81,7 +81,7 @@ Happy Valentines Day, Anu!
 /* ---------- Levels ---------- */
 const levels = [
   {
-    dialogue: "Anu: I'm coming for you Varun 💙",
+    dialogue: "Varun: Anu Please save me from DP world executives telling me Palantir sucks 💙",
     princessStart: { x: 50, y: 180 },
     prince: { x: 520, y: 180 },
     obstacles: [{ x: 250, y: 60, w: 20, h: 280 }],
@@ -89,7 +89,7 @@ const levels = [
     boss: false
   },
   {
-    dialogue: "Varun: Almost there Anu 💙",
+    dialogue: "Anu this time there is two of them and I NEED you to take them out to make Palantir happen 💙",
     princessStart: { x: 50, y: 50 },
     prince: { x: 520, y: 320 },
     obstacles: [
@@ -170,6 +170,7 @@ function startNextLevelAfterDelay() {
 function renderQuiz(levelIndex) {
   const quiz = quizData[levelIndex];
   clearOverlayUI();
+  overlayTitle.innerText = "Relationship Test ( Take very seriously";
   overlayTitle.innerText = `Quiz after Level ${levelIndex + 1}`;
   overlayContent.innerText = quiz.question;
   openOverlay();
