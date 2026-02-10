@@ -407,11 +407,6 @@ function draw() {
       ctx.fillStyle = "#ffffff";
       ctx.fillText("E", e.x + 8, e.y + 23);
     }
-    ctx.fillStyle = "#7c3aed";
-    ctx.fillRect(e.x, e.y, 32, 32);
-    ctx.font = "20px sans-serif";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText("E", e.x + 8, e.y + 23);
   });
 
   // Bullets
