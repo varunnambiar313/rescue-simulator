@@ -1,7 +1,7 @@
 body {
   text-align: center;
   background: linear-gradient(#dbeafe, #eff6ff);
-  font-family: "Comic Sans MS", cursive;
+  font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 10px;
 }
@@ -21,7 +21,8 @@ canvas {
   width: 90%;
   max-width: 500px;
   color: #1e3a8a;
-  font-weight: bold;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 /* Overlay */
@@ -40,9 +41,40 @@ canvas {
   border: 3px solid #2563eb;
   padding: 20px;
   border-radius: 12px;
+  max-width: min(90vw, 760px);
+  max-height: 85vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+#overlayTitle {
+  margin-top: 0;
+  color: #1e3a8a;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+#overlayContent {
+  white-space: pre-line;
+  color: #172554;
+  line-height: 1.4;
+}
+
+#overlayChoices {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+#overlayFeedback {
+  min-height: 24px;
+  color: #1d4ed8;
+  font-weight: bold;
+  white-space: pre-line;
 }
 
 button {
+  font-family: inherit;
   background: #2563eb;
   color: white;
   border: none;
@@ -50,6 +82,16 @@ button {
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
+}
+
+.quiz-choice {
+  width: 100%;
+  text-align: left;
+}
+
+.quiz-choice:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 /* Joystick */
