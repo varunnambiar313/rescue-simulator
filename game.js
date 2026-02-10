@@ -171,6 +171,7 @@ function renderQuiz(levelIndex) {
   const quiz = quizData[levelIndex];
   clearOverlayUI();
   overlayTitle.innerText = "Relationship Test ( Take very seriously";
+  overlayTitle.innerText = `Quiz after Level ${levelIndex + 1}`;
   overlayContent.innerText = quiz.question;
   openOverlay();
 
@@ -413,6 +414,7 @@ function draw() {
 
     ctx.fillStyle = "#111827";
     ctx.fillText("DP World VP of IT", 200, 10);
+    ctx.fillText("Boss Health", 200, 10);
     ctx.fillStyle = "#2563eb";
     ctx.fillRect(200, 16, enemies[0].health * 6, 8);
   }
