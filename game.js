@@ -11,15 +11,19 @@ const nextBtn = document.getElementById("nextBtn");
 /* ---------- Assets ---------- */
 const anuImg = new Image();
 const varunImg = new Image();
-let anuLoaded = false, varunLoaded = false;
+const enemyImg = new Image();
+let anuLoaded = false, varunLoaded = false, enemyLoaded = false;
 
 anuImg.onload = () => anuLoaded = true;
 varunImg.onload = () => varunLoaded = true;
+enemyImg.onload = () => enemyLoaded = true;
 anuImg.onerror = () => anuLoaded = false;
 varunImg.onerror = () => varunLoaded = false;
+enemyImg.onerror = () => enemyLoaded = false;
 
 anuImg.src = "anu.png";
 varunImg.src = "varun.png";
+enemyImg.src = "enemy.png";
 
 /* ---------- Game State ---------- */
 const BASE_SPEED = 1.8;
@@ -380,6 +384,15 @@ function draw() {
 
   // Enemies
   enemies.forEach(e => {
+    if (enemyLoaded) {
+      ctx.drawImage(enemyImg, e.x, e.y, 32, 32);
+    } else {
+      ctx.fillStyle = "#7c3aed";
+      ctx.fillRect(e.x, e.y, 32, 32);
+      ctx.font = "20px sans-serif";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText("E", e.x + 8, e.y + 23);
+    }
     ctx.fillStyle = "#7c3aed";
     ctx.fillRect(e.x, e.y, 32, 32);
     ctx.font = "20px sans-serif";
@@ -405,6 +418,19 @@ function draw() {
   // Health bars
   if (levels[level].boss) {
     ctx.font = "14px sans-serif";
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Anu Health", 20, 10);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(20, 16, princessHealth * 40, 8);
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("DP World VP of IT", 200, 10);
+    ctx.fillStyle = "#2563eb";
+    ctx.fillRect(200, 16, enemies[0].health * 6, 8);
+  }
+}
+
 
     ctx.fillStyle = "#111827";
     ctx.fillText("Anu Health", 20, 10);
