@@ -174,6 +174,7 @@ function startNextLevelAfterDelay() {
 function renderQuiz(levelIndex) {
   const quiz = quizData[levelIndex];
   clearOverlayUI();
+  overlayTitle.innerText = "Relationship Test ( Take very seriously";
   overlayTitle.innerText = "Relationship Test ( Take very seriously)";
   overlayContent.innerText = quiz.question;
   openOverlay();
@@ -265,9 +266,14 @@ function resetStick() {
   stick.style.top = "35px";
 }
 
-joystick.addEventListener("touchstart", e => { e.preventDefault(); dragging = true; });
+joystick.addEventListener("touchstart", e => {
+  e.preventDefault();
+  dragging = true;
+  if (e.touches && e.touches[0]) updateStick(e.touches[0].clientX, e.touches[0].clientY);
+});
 joystick.addEventListener("touchmove", e => { e.preventDefault(); dragging && updateStick(e.touches[0].clientX, e.touches[0].clientY); });
 joystick.addEventListener("touchend", e => { e.preventDefault(); resetStick(); });
+joystick.addEventListener("touchcancel", resetStick);
 
 joystick.addEventListener("mousedown", e => { dragging = true; updateStick(e.clientX, e.clientY); });
 window.addEventListener("mousemove", e => dragging && updateStick(e.clientX, e.clientY));
@@ -276,6 +282,10 @@ window.addEventListener("mouseup", resetStick);
 /* ---------- Utility ---------- */
 function hit(a, b, s) {
   return a.x < b.x + s && a.x + s > b.x && a.y < b.y + s && a.y + s > b.y;
+}
+
+function isLevelReady() {
+  return Boolean(princess && Array.isArray(enemies) && Array.isArray(obstacles));
 }
 
 /* ---------- Shooting ---------- */
@@ -310,6 +320,8 @@ function playerShoot() {
 
 /* ---------- Update ---------- */
 function update() {
+  if (!isLevelReady()) return;
+
   const moveSpeed = levels[level].boss ? BASE_SPEED * 1.2 : BASE_SPEED * 2;
   princess.x += joyX * moveSpeed;
   princess.y += joyY * moveSpeed;
@@ -354,6 +366,8 @@ function update() {
 
 /* ---------- Draw ---------- */
 function draw() {
+  if (!isLevelReady()) return;
+
   ctx.clearRect(0, 0, 600, 400);
 
   // Obstacles
@@ -426,6 +440,14 @@ function draw() {
 
     ctx.fillStyle = "#111827";
     ctx.fillText("DP World VP of IT", 200, 10);
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("Anu Health", 20, 10);
+    ctx.fillStyle = "#ef4444";
+    ctx.fillRect(20, 16, princessHealth * 40, 8);
+
+    ctx.fillStyle = "#111827";
+    ctx.fillText("DP World VP of IT", 200, 10);
     ctx.fillStyle = "#2563eb";
     ctx.fillRect(200, 16, enemies[0].health * 6, 8);
   }
@@ -447,6 +469,7 @@ function draw() {
 
 /* ---------- Loop ---------- */
 function loop() {
+  if (!isLevelReady()) loadLevel();
   if (!paused) update();
   draw();
   requestAnimationFrame(loop);
