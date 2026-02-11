@@ -36,10 +36,10 @@ const quizData = {
   0: {
     question: "What Video game is Varun looking forward to playing this month?",
     options: [
-      { text: "Resident Evil 9;Requiem", correct: false, message: "Anu, Yar aapko itna bhi nahi pata mere games ke bare mai" },
+      { text: "Resident Evil 9;Requiem", correct: false, message: "Anu, Yar aapko itna bhi nahi pata mere games ke bare mai. I need the answer u gave me last time" },
       { text: "Vo Horror wali game", correct: true, message: "Ye hui na baat, yar ab to naam yad kar lo xD" },
-      { text: "Varun plays too many games he needs to stop", correct: false, message: "Anu yar you have to learn how to live with it ab koi choice nhi hai" },
-      { text: "Varun is playing with Anu's life", correct: false, message: "Anu wo ye month hi nhi I plan to play with it for a looooooooooooooot longer than that xD" }
+      { text: "Varun plays too many games he needs to stop", correct: false, message: "Anu, you have to learn how to live with it ab koi choice nhi hai" },
+      { text: "Varun is playing with Anu's life", correct: false, message: "That is not limited to this month, I plan to play with it for a looooooooooooooot longer than that xD" }
     ]
   },
   1: {
