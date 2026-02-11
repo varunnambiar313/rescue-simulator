@@ -61,7 +61,7 @@ Since you are a weirdo who does not accepts gifts(I understand why now and I res
 In the last few weeks, we have talked so much and gotten to know each other really well so I decided to compile list of things we have in common. It's a very long list so brace yourself:
 
 A) Death Note
-B) Favorite Color: Blue
+B) Favorite Color: Blue [App ka theme I kept blue instead of typical valentine's red because of this]
 The END.
 
 Yaar kaise phas gaye hum is situation mai xD? Anyways this is what we signed up for. Now we have to learn to live navigating all of our differences (there will be many more that we have not discovered yet xD). Which sounds kinda fun secretly.
