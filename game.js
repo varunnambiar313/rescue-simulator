@@ -56,7 +56,7 @@ const quizData = {
 const finalMessage = `
 Yar Anu,
 
-Since you are a weirdo who does not accepts gifts I decided to make something like this. This is my way of introducing you to video games and getting you ready for your future xD.
+Since you are a weirdo who does not accepts gifts(I understand why now and I respect it and also like it) I decided to make something like this. This is my way of introducing you to video games and getting you ready for your future xD.
 
 In the last few weeks, we have talked so much and gotten to know each other really well so I decided to compile list of things we have in common. It's a very long list so brace yourself:
 
@@ -66,20 +66,22 @@ The END.
 
 Yaar kaise phas gaye hum is situation mai xD? Anyways this is what we signed up for. Now we have to learn to live navigating all of our differences (there will be many more that we have not discovered yet xD). Which sounds kinda fun secretly.
 
-Aur upar se long distance, cannot even annoy you in person. But hopefully we get to see each other in a couple of months.
+Aur upar se long distance, can't even annoy you in person. But hopefully we get to see each other in a couple of months.
 
-Until then we need to stick to more calls, voice notes and texts jo is always fun with you. I mean apne mujhe tak voice note person bana diya which I thought was impossible.
+Until then we need to stick to more calls, voice notes and texts which is always endless fun with you. I mean apne mujhe tak voice note person bana diya which I thought was impossible.
 
-Even though we are only at the beginning of our journey of getting to know each other, but I do feel like we have a deeper connection. A level of understanding of each other that is not easy to find.
+Even though we are only at the beginning of our journey of getting to know each other, I do feel like we have a deeper connection. A level of understanding of each other that is not easy to find.
 
-We have such good chemistry and understanding ki sometimes I wonder how hard it would be to achieve my goal of making you mad/annoyed at me xD.
+We have such good chemistry ki sometimes I wonder how hard It's gonna be to achieve my goal of making you mad/annoyed at me xD.
 I am sure I will find a way.
 
-I don't know what I did to deserve a pretty, smart, funny and short tempered (apparently?) girl like you but I am not complaining. xD
+Your are pretty, smart, funny, short tempered (apparently? yet to see), understanding and also very good at communicating. I struggle to find a single negative quality in you. 
+Talking to you just makes me forget about every problem I have wether it is work or otherwise. I really appreciate the constant positive attitute and support that you give me. I hope to be able to do the same for you.
+I don't know where our journey takes us but I have a good feeling about you and I.
 
 Anyways, I hope this is the last Valentine's day we have to celebrate not being together. Looking forward to endless laughs and sleep deprived nights talking to you.
 
-Happy Valentines Day, Anu!
+Happy Valentines Day, Anu! Kanam :)
 `;
 
 /* ---------- Levels ---------- */
