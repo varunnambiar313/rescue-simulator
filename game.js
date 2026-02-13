@@ -57,6 +57,7 @@ const finalMessage = `
 Yar Anu,
 
 Since you are a weirdo who does not accepts gifts(I understand why now and I respect it and also like it) I decided to make something like this. This is my way of introducing you to video games and getting you ready for your future xD.
+In my ideal world, I want us playing horror video games together xD
 
 In the last few weeks, we have talked so much and gotten to know each other really well so I decided to compile list of things we have in common. It's a very long list so brace yourself:
 
@@ -64,20 +65,23 @@ A) Death Note
 B) Favorite Color: Blue [App ka theme I kept blue instead of typical valentine's red because of this]
 The END.
 
-Yaar kaise phas gaye hum is situation mai xD? Anyways this is what we signed up for. Now we have to learn to live navigating all of our differences (there will be many more that we have not discovered yet xD). Which sounds kinda fun secretly.
+Yaar kaise phas gaye hum is situation mai xD? All I know is I am not complaining, In fact I am loving it. every second I spend talking to you is genuinely so much fun. You are amazing. 
+I love how I have this person in my life now who I can share everything with. Even stuff I legally should not xD
+It's only been a month barely and I trust you with anything and everything. I know you want the best for me just like I want the best for you. This relationship is so healthy that it feels unreal somehow xD 
 
-Aur upar se long distance, can't even annoy you in person. But hopefully we get to see each other in a couple of months.
+Only negative is the long distance, I wish I could annoy you in person. But hopefully we get to see each other in a couple of months. and for a longer period in July. which is when I get to become 3 years older than you officialy. xD
 
 Until then we need to stick to more calls, voice notes and texts which is always endless fun with you. I mean apne mujhe tak voice note person bana diya which I thought was impossible.
 
-Even though we are only at the beginning of our journey of getting to know each other, I do feel like we have a deeper connection. A level of understanding of each other that is not easy to find.
+Even though we are only at the beginning of our journey of getting to know each other, I do feel like we have a deeper connection. A level of understanding of each other that is not easy to find. 
 
-We have such good chemistry ki sometimes I wonder how hard It's gonna be to achieve my goal of making you mad/annoyed at me xD.
-I am sure I will find a way.
+I know I joke about making you mad, but seeing you upset is the last thing I’d ever want. You have such a beautiful smile, and I want to see it as often as possible. 
+But I know life is unpredictable and sometimes things might get hard. Just know that I will be there by your side to support you during the difficult times no matter what. 
+And If we face anything difficult together, Then I have no doubt with each other's company, we can overcome anything.
 
 Your are pretty, smart, funny, short tempered (apparently? yet to see), understanding and also very good at communicating. I struggle to find a single negative quality in you. 
-Talking to you just makes me forget about every problem I have wether it is work or otherwise. I really appreciate the constant positive attitute and support that you give me. I hope to be able to do the same for you.
-I don't know where our journey takes us but I have a good feeling about you and I.
+Talking to you just makes me forget about every problem I have wether it is work or otherwise. I really appreciate the constant positive attitute and support that you give me. I really hope to be able to do the same for you.
+I don't know where our journey takes us but I have a good feeling about you and I. I am rooting for us to go all the way. Which is a long road, but I would be damned if I didn't try.
 
 Anyways, I hope this is the last Valentine's day we have to celebrate not being together. Looking forward to endless laughs and sleep deprived nights talking to you.
 
@@ -87,7 +91,7 @@ Happy Valentines Day, Anu! Kanam :)
 /* ---------- Levels ---------- */
 const levels = [
   {
-    dialogue: "Varun: Anu Please save me from DP world executives telling me Palantir sucks 💙",
+    dialogue: "Varun: Anu💙 Please save me from DP world executives telling me Palantir sucks ",
     princessStart: { x: 50, y: 180 },
     prince: { x: 520, y: 180 },
     obstacles: [{ x: 250, y: 60, w: 20, h: 280 }],
